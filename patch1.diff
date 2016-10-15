@@ -1,0 +1,153 @@
+From 13d81569af78118d91bd14eab396dd4f03c8fe78 Mon Sep 17 00:00:00 2001
+From: anil a <aakumar2010@gmail.com>
+Date: Fri, 14 Oct 2016 16:22:04 -0400
+Subject: [PATCH] User Details Program connecting to database and
+ inserting&retrive data through servlets
+
+---
+ WebContent/userform.html     | 32 ++++++++++++++++
+ src/greetings/GreetUser.java | 91 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 123 insertions(+)
+ create mode 100644 WebContent/userform.html
+ create mode 100644 src/greetings/GreetUser.java
+
+diff --git a/WebContent/userform.html b/WebContent/userform.html
+new file mode 100644
+index 0000000..4987201
+--- /dev/null
++++ b/WebContent/userform.html
+@@ -0,0 +1,32 @@
++<!DOCTYPE html>
++<html>
++<head>
++<meta charset="ISO-8859-1">
++<title>UserInput</title>
++</head>
++<body>
++<hr>
++<form name="p" action="/Test2/GreetUser" method="post">
++<table>
++<tbody>
++<tr>
++<td>Name: </td>
++<td><input type="text" name="name"/>
++</tr>
++<tr>
++<td>Email ID: </td>
++<td><input type="text" name="email"/>
++</tr>
++<tr>
++<td>Phone: </td>
++<td><input type="text" name="phone"/>
++</tr>
++<tr>
++<td>&nbsp;</td>
++<td><input type="submit" name="submit"/>
++</tr>
++</tbody>
++</table>
++</form>
++</body>
++</html>
+\ No newline at end of file
+diff --git a/src/greetings/GreetUser.java b/src/greetings/GreetUser.java
+new file mode 100644
+index 0000000..df24e0c
+--- /dev/null
++++ b/src/greetings/GreetUser.java
+@@ -0,0 +1,91 @@
++package greetings;
++import java.io.IOException;
++import java.io.PrintWriter;
++import java.sql.Connection;
++import java.sql.DriverManager;
++import java.sql.PreparedStatement;
++import java.sql.ResultSet;
++import java.sql.ResultSetMetaData;
++import java.sql.Statement;
++import java.util.Map;
++import javax.servlet.ServletException;
++import javax.servlet.annotation.WebServlet;
++import javax.servlet.http.HttpServlet;
++import javax.servlet.http.HttpServletRequest;
++import javax.servlet.http.HttpServletResponse;
++
++@WebServlet("/GreetUser")
++public class GreetUser extends HttpServlet {
++	private static final long serialVersionUID = 1L;
++ 
++    public GreetUser() {
++        super();
++    }
++	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
++		Map<String, String[]> parameterMap = request.getParameterMap();
++		String email = null;
++		String name = null;
++		String phone = null;
++		PrintWriter out=response.getWriter();
++		
++		System.out.println((parameterMap.get("name"))[0].toString());
++		System.out.println((parameterMap.get("phone"))[0].toString());
++		System.out.println((parameterMap.get("email"))[0].toString());
++		
++		response.getWriter().append("Served at: ").append(request.getContextPath());
++		response.getWriter().append("</br>"+(parameterMap.get("name"))[0].toString());
++		response.getWriter().append("</br>"+(parameterMap.get("phone"))[0].toString());
++		response.getWriter().append("</br>"+(parameterMap.get("email"))[0].toString());
++
++		name =parameterMap.get("name")[0].toString();
++		phone =parameterMap.get("phone")[0].toString();
++		email = parameterMap.get("email")[0].toString();
++		
++		
++		String sql = "insert into register(name,phone,email) values(?,?,?)";
++        Connection con = null;
++        PreparedStatement ps = null;
++		try{
++			Class.forName("com.mysql.jdbc.Driver");
++            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/anil", "root", "root");
++            System.out.println("connection success");
++            String qry = "SELECT * FROM anil.register";
++            Statement stmt = con.createStatement();
++            ResultSet rs = stmt.executeQuery(qry);
++            
++            out.println("<p alien='center'><table border=2>");
++            ResultSetMetaData rsmd=rs.getMetaData();
++            int colCount=rsmd.getColumnCount();
++            out.println("<tr>");
++            for(int i=0; i<colCount; i++)
++            {
++            	out.println("<th>"+rsmd.getColumnLabel(i+1)+"</th>");
++            }
++            out.println("</tr>");
++            while(rs.next())
++            {
++            	out.println("<tr>");
++            	for(int i=0; i<colCount; i++)
++            	{
++            		out.println("<td>" + rs.getString(i+1)+ "</td>");
++            	}
++            	out.println("</tr>");
++            }
++            out.print("</table></p>");
++            ps = con.prepareStatement(sql);
++            ps.setString(1, name);
++            ps.setString(2, phone);
++            ps.setString(3, email);
++            ps.executeUpdate();
++            ps.close();
++	}
++		catch(Exception e)
++		{	
++			e.printStackTrace();
++		}
++		}
++	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
++	{
++		doGet(request, response);
++	}
++}
+\ No newline at end of file
+-- 
+2.8.1.windows.1
+
