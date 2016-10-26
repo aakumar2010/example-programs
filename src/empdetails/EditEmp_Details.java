@@ -1,4 +1,4 @@
-package userdetails;
+package empdetails;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/EditUserDetails")
-public class EditUserDetails extends HttpServlet {
+@WebServlet("/EditEmp_Details")
+public class EditEmp_Details extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public EditUserDetails() {
+	public EditEmp_Details() {
 		super();
 	}
 
@@ -26,35 +26,49 @@ public class EditUserDetails extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 		Map<String, String[]> parameterMap = request.getParameterMap();
-		String userName = parameterMap.get("userID")[0].toString();
+		String first_name = parameterMap.get("userID")[0].toString();
 		try {
 			Connection con = null;
 			con = openConnection();
 			
-			ResultSet rs = loadUser(userName, con);
+			ResultSet rs = loadUser(first_name, con);
 			rs.next();
-			out.append("<p align=center>Update User: </p>");
+			out.append("<p align=center>Save User: </p>");
 			out.append("</br>" );
-			out.append("<form name='Per' action='/Test2/UpdateUserDetails' method='post'>"
+			out.append("<form name='Per' action='/Test2/Emp_Details' method='post'>"
 					+ "<table>"
 					+ "<tbody>"
-					+ "<tr><td>UserName: </td>"
-					+ "<td><input type='text' name='UserName' value='"+ rs.getString(1)+"' />"
-					+ "</tr><tr><td>UserEmail: </td>"
-					+ "<td><input type='text' name='UserEmail' value='"+ rs.getString(2)+"' />"
+					+ "<tr><td>first_name: </td>"
+					+ "<td><input type='text' name='first_name' value='"+ rs.getString(1)+"' />"
 					+ "</tr>"
-					+ "<tr><td>UserPhone: </td>"
-					+ "<td><input type='text' name='UserPhone' value='"+ rs.getString(3)+"' />"
-					+ "</tr><tr><td>&nbsp;</td>"
+					+ "<tr><td>last_name: </td>"
+					+ "<td><input type='text' name='last_name' value='"+ rs.getString(2)+"' />"
+					+ "</tr>"
+					+"<tr><td>phone: </td>"
+					+ "<td><input type='text' name='phone' value='"+ rs.getString(3)+"' />"
+					+ "</tr>"
+					+ "<tr><td>email: </td>"
+					+ "<td><input type='text' name='email' value='"+ rs.getString(4)+"' />"
+					+ "</tr>"
+					+"<tr><td>city: </td>"
+					+ "<td><input type='text' name='city' value='"+ rs.getString(5)+"' />"
+					+ "</tr>"
+					+"<tr><td>state: </td>"
+					+ "<td><input type='text' name='state' value='"+ rs.getString(6)+"' />"
+					+ "</tr>"
+					+"<tr><td>pin: </td>"
+					+ "<td><input type='text' name='pin' value='"+ rs.getString(7)+"' />"
+					+ "</tr>"
+					+ "<tr><td>&nbsp;</td>"
 					+ "<td>"
 					+ "<input type='hidden' name='userID' value='"+ rs.getString(1) +"'/>"
 					+ "<input type='hidden' name='action' value='update'/>"
-					+ "<input type='submit' name='Submit' value='Update User' >"
+					+ "<input type='submit' name='Submit' value='Save User' >"
 					+ "</tr></tbody>"
 					+ "</table>");
 
 			
-			//printEditUserdetailsLink(out,rs);
+			//printEditEmpdetailsLink(out,rs);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,7 +78,7 @@ public class EditUserDetails extends HttpServlet {
 
 
 	private ResultSet loadUser(String userID,Connection con) throws SQLException {
-		String qry = "SELECT * FROM anil.user_details where UserName=?";
+		String qry = "SELECT * FROM anil.emp_details where first_name=?";
 		PreparedStatement ps = con.prepareStatement(qry);
 		ps.setString(1, userID);
 		ResultSet rs = ps.executeQuery();

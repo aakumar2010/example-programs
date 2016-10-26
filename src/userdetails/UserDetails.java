@@ -1,5 +1,4 @@
 package userdetails;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -26,10 +25,10 @@ public class UserDetails extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();
-		
+
 		Map<String, String[]> parameterMap = request.getParameterMap();
 		String userName = null != parameterMap.get("UserName") ? parameterMap.get("UserName")[0].toString() : "";
 		String userEmail = null != parameterMap.get("UserEmail") ? parameterMap.get("UserEmail")[0].toString() : "";
@@ -38,17 +37,14 @@ public class UserDetails extends HttpServlet {
 		String action = null != parameterMap.get("action") ? parameterMap.get("action")[0].toString() : "";
 
 		Connection con = null;
+		@SuppressWarnings("unused")
 		PreparedStatement ps = null;
 
 		try {
 			con = openConnection();
-
 			if (!"".equalsIgnoreCase(userID) && "update".equalsIgnoreCase(action)) {
 				hanldeUpdate(out, userName, userEmail, userPhone, userID, con);
-			} else if (!"".equalsIgnoreCase(userID) && "delete".equalsIgnoreCase(action)) {
-				handleDelete(out, userID, con);
-
-			} else if (isValidData(userName, userEmail, userPhone)) {
+			}  else if (isValidData(userName, userEmail, userPhone)) {
 
 				handleAdd(out, userName, userEmail, userPhone, con);
 			}
@@ -73,14 +69,7 @@ public class UserDetails extends HttpServlet {
 		printUserSaveStatus(out, userName, userEmail, userPhone);
 	}
 
-	private void handleDelete(PrintWriter out, String userID, Connection con) throws SQLException {
-		ResultSet rs = loadUser(userID, con);
-		rs.next();
 
-		deleteUser(userID, con);
-
-		printUserDeleteStatus(out, rs.getString(1), rs.getString(2), rs.getString(3));
-	}
 
 	private void hanldeUpdate(PrintWriter out, String userName, String userEmail, String userPhone, String userID,
 			Connection con) throws SQLException {
@@ -128,8 +117,8 @@ public class UserDetails extends HttpServlet {
 
 	private void createDeletebutton(PrintWriter out, String userName) {
 		out.append(
-				"<td>" + "<form action='/Test2/UserDetails' method=post>" + "<input type='hidden' name='userID' value='"
-						+ userName + "'/>" + "<input type='hidden' name='action' value='delete'/>"
+				"<td>" + "<form action='/Test2/DeleteUserDetails' method=post>" + "<input type='hidden' name='userID' value='"
+						+ userName + "'/>" 
 						+ "<input type=submit value='Delete'/>" + "</form>" + "</td>");
 	}
 
@@ -147,8 +136,6 @@ public class UserDetails extends HttpServlet {
 		out.print("</table></p>");
 	}
 
-	
-
 	private void printUserSaveStatus(PrintWriter out, String userName, String userEmail, String userPhone) {
 		out.append("User Saved success:");
 		out.append("</br>" + userName);
@@ -163,12 +150,7 @@ public class UserDetails extends HttpServlet {
 		out.append("&nbsp;&nbsp;&nbsp;" + userPhone);
 	}
 
-	private void printUserDeleteStatus(PrintWriter out, String userName, String userEmail, String userPhone) {
-		out.append("<p align=center><b>User Deleted success: </b></p>");
-		out.append("</br> userName :" + userName);
-		out.append("&nbsp;&nbsp;&nbsp; userEmail: " + userEmail);
-		out.append("&nbsp;&nbsp;&nbsp; userPhone :" + userPhone);
-	}
+	
 
 	private void saveUser(String userName, String userEmail, String userPhone, Connection con) throws SQLException {
 		PreparedStatement ps;
@@ -195,7 +177,6 @@ public class UserDetails extends HttpServlet {
 		ps.close();
 		System.out.println("user update!!!!!!!!!");
 	}
-
 	private Connection openConnection() throws ClassNotFoundException, SQLException {
 		Connection con;
 		Class.forName("com.mysql.jdbc.Driver");
@@ -204,21 +185,6 @@ public class UserDetails extends HttpServlet {
 		return con;
 	}
 
-	private int deleteUser(String userID, Connection con) throws SQLException {
-		String qry = "Delete FROM anil.user_details where UserName=?";
-		PreparedStatement ps = con.prepareStatement(qry);
-		ps.setString(1, userID);
-		int deletedRowCount = ps.executeUpdate();
-		return deletedRowCount;
-	}
-
-	private ResultSet loadUser(String userID, Connection con) throws SQLException {
-		String qry = "SELECT * FROM anil.user_details where UserName=?";
-		PreparedStatement ps = con.prepareStatement(qry);
-		ps.setString(1, userID);
-		ResultSet rs = ps.executeQuery();
-		return rs;
-	}
 	private ResultSet loadAllUsers(Connection con) throws SQLException {
 		String qry = "SELECT * FROM anil.user_details";
 		Statement stmt = con.createStatement();
