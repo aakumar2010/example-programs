@@ -1,0 +1,15 @@
+<div id="updateUser">
+	<form ng-submit="updateCustomer()" ng-controller="ExampleController">
+		<p>Enter Customer Id and Customer details to Update..!</p>
+		Id : <input name="id" type="text" ng-model="id" name="id" /><br />
+		Name : <input name="name" type="text" ng-model="name" name="name" /><br />
+		Email : <input name="email" type="text" ng-model="email" name="email" /><br />
+		Phone : <input name="phone" type="text" ng-model="phone" name="phone" />
+		
+		
+		<input type="submit" value="Submit" />
+		<ul>
+			<li ng-repeat="x in data">{{x}}</li>
+		</ul>
+	</form>
+	</div>

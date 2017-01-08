@@ -1,0 +1,12 @@
+<div id="deleteUser">
+	<form ng-submit="deleteCustomer()" ng-controller="ExampleController">
+		<p>Delete Customer details..!</p>
+		
+		ID : <input name="id" type="text" ng-model="id" name="id" />
+		<input type="submit" value="Submit" />
+		
+		<ul>
+			<li ng-repeat="x in data">{{x}}</li>
+		</ul>
+	</form>
+	</div>

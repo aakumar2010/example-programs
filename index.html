@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-route.min.js"></script>
+<!--     <script src="//code.angularjs.org/snapshot/angular.min.js"></script> -->
+   <!--  <script src="script.js"></script> -->
+</head>
+<body ng-app="RoutingApp">
+    <h2>AngularJS Routing</h2>
+    
+    <p>Jump to the 
+    <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#create">create</a></li>
+    <li><a href="#delete">delete</a></li>
+   <li><a href="#update">update</a></li>
+    <li><a href="#list">list</a></li>
+    </ul>
+    </p>
+    
+    <div ng-view>
+    </div>
+    <script>
+    angular.module('RoutingApp', ['ngRoute'])
+        .config( ['$routeProvider', function($routeProvider) {
+            $routeProvider
+                .when('/create', {
+                    templateUrl: 'angularservice.html',
+                    controller: 'ExampleController'
+                })
+                .when('/delete', {
+                    templateUrl: 'angularservice2.html'
+                })
+                .when('/update', {
+                    templateUrl: 'angularservice3.html'
+                })
+                .when('/list', {
+                    templateUrl: 'angularservice4.html'
+                });
+        }])
+        .controller('ExampleController', function($scope, $http) {
+		console.log('controller ready');
+		$scope.data = [];
+		// create operation
+		$scope.createCustomer = function() {
+		console.log('creating the customer');
+		if ($scope.name, $scope.email, $scope.phone) {
+		$scope.data = [];
+		$scope.data.push($scope.name, $scope.email, $scope.phone);
+		var encodedString = {
+				name : $scope.name,
+				email : $scope.email,
+				phone : $scope.phone
+				};
+		$http({
+				method : 'POST',
+				url : 'http://localhost:8080/JAXRSJsonCRUDExample/rest/employees/',
+				data : encodedString,
+				headers : {'Content-Type' : 'Application/JSON'}
+		})
+		.then(function(data, status, headers, config) {
+			console.log(data);
+			},
+			function(data, status, headers, config) {
+				alert("unable to update the form");
+				});
+		}
+		};
+		
+		//delete operation
+		$scope.deleteCustomer = function() {
+			console.log('delete the customer');
+			if ($scope.id) {
+			$scope.data = [];
+			$scope.data.push($scope.id);
+			var encodedString = {
+					id : $scope.id
+					};
+			$http({
+					method : 'DELETE',
+					url : 'http://localhost:8080/JAXRSJsonCRUDExample/rest/employees/'+ $scope.id,
+					data : encodedString,
+					headers : {'Content-Type' : 'Application/JSON'}
+			})
+			.then(function(data, status, headers, config) {
+				console.log($scope.id);
+				},
+				function(data, status, headers, config) {
+					alert("unable to delete the detalis");
+					});
+			}
+			};
+			
+			//update operation
+			$scope.updateCustomer = function() {
+				console.log('updating the customer');
+				if ($scope.id, $scope.name, $scope.email, $scope.phone) {
+				$scope.data = [];
+				$scope.data.push($scope.id, $scope.name, $scope.email, $scope.phone);
+				var encodedString = {
+						id : $scope.id,
+						name : $scope.name,
+						email : $scope.email,
+						phone : $scope.phone
+						};
+				$http({
+						method : 'PUT',
+						url : 'http://localhost:8080/JAXRSJsonCRUDExample/rest/employees/',
+						data : encodedString,
+						headers : {'Content-Type' : 'Application/JSON'}
+				})
+				.then(function(data, status, headers, config) {
+					console.log(data);
+					},
+					function(data, status, headers, config) {
+						alert("unable to update the form");
+						});
+				}
+				};
+				// list operation
+				$scope.listCustomer = function() {
+					console.log('customers list');
+					$http({
+						method : 'GET',
+						url : 'http://localhost:8080/JAXRSJsonCRUDExample/rest/employees/'
+					}).then(function success(response) {
+						$scope.myWelcome = response.data;
+					}, function error(response) {
+						alert("unable to get the data");
+					});
+				};
+		});;
+    </script>
+</body>
+</html>

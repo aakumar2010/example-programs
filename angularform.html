@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Example - example-ng-submit-production</title>
+  <script src="//code.angularjs.org/snapshot/angular.min.js"></script> 
+</head>
+<body ng-app="submitExample">
+  <script>
+  angular.module('submitExample', [])
+    .controller('ExampleController', ['$scope', function($scope) {
+      $scope.list = [];
+      $scope.name;
+      $scope.email;
+      $scope.phone;
+      $scope.submit = function() {
+        if ($scope.name, $scope.email, $scope.phone) {
+        	$scope.list = [];
+        	$scope.list.push(this.name, this.email, this.phone);
+          $scope.name;
+          $scope.email;
+          $scope.phone;
+        }
+      };
+    }]);
+</script>
+<form ng-submit="submit()" ng-controller="ExampleController">
+  Name :
+  <input name="name" type="text" ng-model="name" name="name" /><br/>
+  Email :
+  <input name="email" type="text" ng-model="email" name="email" /><br/>
+  Phone :
+  <input name="phone" type="text" ng-model="phone" name="phone" />
+  
+  <input type="submit" id="submit" value="Submit" />
+<ul>
+  <li ng-repeat="x in list"> {{x}} </li> 
+  </ul>
+</form>
+</body>
+</html>
